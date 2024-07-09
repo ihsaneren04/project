@@ -5,6 +5,7 @@ def suitable_color_finder(n, color_map):
     red_available = True
     yellow_available = True
     blue_available = True
+    orange_available = True
     for i in list(G.adj[n]):
         if color_map[i - 1] != 0:
             if color_map[i - 1] == 1:
@@ -13,12 +14,16 @@ def suitable_color_finder(n, color_map):
                 yellow_available = False
             elif color_map[i - 1] == 3:
                 blue_available = False
+            elif color_map[i - 1] == 4:
+                orange_available = False
     if red_available:
         return 1
     elif yellow_available:
         return 2
-    else:
+    elif blue_available:
         return 3
+    else:
+        return 4
 
 
 def color_checker(a, color_map):
@@ -30,14 +35,13 @@ def color_checker(a, color_map):
 
 
 G = nx.Graph()
-G.number_of_nodes = random.randint(40, 50)
+G.number_of_nodes = int(input("Enter the number of nodes: "))
 num = G.number_of_nodes
 
-
+# Creating a random planar graph
 G.add_nodes_from([n for n in range(1, num + 1)])
 k = 0
 while True:
-    print(k)
     number_of_edges = random.randint(num - 1, 3 * num - 6)
     for i in range(number_of_edges):
         a ,b = random.sample([d for d in range(1, num + 1)], 2)
@@ -48,8 +52,13 @@ while True:
     else:
         G.clear()
         G.add_nodes_from([n for n in range(1, num + 1)])
+print("Total attempt to find a planar graph with", num, "nodes:", k)
 
-
+# Coloring the graph. Setting 1st node as red, 2nd as yellow. Algorithm works like this: If the previous_node has
+# adjacent nodes that aren't colored yet, it assigns a color to it with the preference order: Red, Yellow, Blue, Orange
+# Else if all the nodes that are adjacent to the previous_node are colored or there is no adjacent node to the
+# previous_node, algorithm assigns a color to the new node from the smallest numbered node from the nodes that aren't
+# colored.
 color_map = [1] + [0] * (num - 1)
 previous_node = 1
 least_elt = (sorted(list(G.adj[1])))[0]
@@ -75,16 +84,19 @@ while colored_nodes <= num:
     colored_nodes += 1
 
 
+
 for k in range(len(color_map)):
     if color_map[k] == 1:
         color_map[k] = "red"
     elif color_map[k] == 2:
         color_map[k] = "yellow"
-    else:
+    elif color_map[k] == 3:
         color_map[k] = "blue"
+    else:
+        color_map[k] = "orange"
 
 
-
+# Drawing the colored graph
 sorted_nodes = sorted(G.nodes)
 node_colors = [color_map[sorted_nodes.index(node)] for node in G.nodes()]
 nx.draw_planar(G, node_color=node_colors, with_labels=True)
