@@ -105,4 +105,4 @@ pl.show()
 
 # While generating random planar graph, 45th line, I used the theory that every connected simple planar graph with 
 # vertex >= 3 has edges at most (3 * number of vertices) - 6. This theory is a consequence of Euler's Formula for planar
-# graphs.
+# graphs. Since every node must have degree >= 1, minimum number of edges is bigger than or equal to (number of vertices - 1)
